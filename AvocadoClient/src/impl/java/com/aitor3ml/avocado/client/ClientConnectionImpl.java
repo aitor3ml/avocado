@@ -1,0 +1,63 @@
+package com.aitor3ml.avocado.client;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
+import org.eclipse.jetty.websocket.client.WebSocketClient;
+
+import com.aitor3ml.avocado.client.websocket.WSConnection;
+
+public class ClientConnectionImpl implements ClientConnection {
+
+	private final URI uri;
+
+	private final ClientConnectionListener listener;
+
+	private final WebSocketClient client;
+
+	private final WSConnection socket;
+
+	public ClientConnectionImpl(String host, int port, ClientConnectionListener listener) throws URISyntaxException {
+		uri = new URI("ws://" + host + ":" + port);
+		this.listener = listener;
+
+		client = new WebSocketClient();
+		socket = new WSConnection(this);
+	}
+
+	@Override
+	public void connect() throws Exception {
+		client.start();
+		ClientUpgradeRequest request = new ClientUpgradeRequest();
+		client.connect(socket, uri, request);
+	}
+
+	@Override
+	public void disconnect() throws Exception {
+		client.stop();
+	}
+
+	public void connected() {
+		listener.connected();
+	}
+
+	public void message(String msg) {
+		listener.message(msg);
+	}
+
+	public void closed(int statusCode, String reason) {
+		listener.closed(statusCode, reason);
+	}
+
+	@Override
+	public void send(String msg) {
+		socket.send(msg);
+	}
+
+	@Override
+	public boolean isConnected() {
+		return client.isStarted();
+	}
+
+}
