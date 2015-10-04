@@ -1,6 +1,6 @@
 package com.aitor3ml.avocado.server.tasks;
 
-public abstract class Task implements Runnable {
+public abstract class Task implements Runnable, Comparable<Task> {
 
 	private long start;
 	private final Long period;
@@ -59,6 +59,15 @@ public abstract class Task implements Runnable {
 
 	public void cancel() {
 		this.canceled = true;
+	}
+
+	@Override
+	public int compareTo(Task o) {
+		if (start < o.start)
+			return -1;
+		if (start > o.start)
+			return 1;
+		return 0;
 	}
 
 }

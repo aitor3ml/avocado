@@ -1,52 +1,44 @@
 package com.aitor3ml.avocado.server.tasks;
 
-import java.util.Iterator;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class TaskManager {
 
-	private final Queue<Task> queue;
-	private final Queue<Task> added;
+	private final Timer timer = new Timer();
+	private final PriorityBlockingQueue<Task> queue;
 
 	public TaskManager() {
-		queue = new PriorityQueue<Task>(new TaskComparator());
-		added = new ConcurrentLinkedQueue<Task>();
+		queue = new PriorityBlockingQueue<Task>();
 	}
 
 	public void schedule(Task task) {
-		added.add(task);
-	}
-
-	public boolean hasTasks() {
-		return queue.size() > 0 || added.size() > 0;
+		long delay = task.getStart() - System.currentTimeMillis();
+		if (delay > 0)
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					queue.add(task);
+				}
+			}, delay);
+		else
+			queue.add(task);
 	}
 
 	public void run() {
-		runTasks();
-		addTasks();
-	}
-
-	private void addTasks() {
-		Iterator<Task> iterator = added.iterator();
-		while (iterator.hasNext()) {
-			Task task = iterator.next();
-			queue.add(task);
-			iterator.remove();
-		}
-	}
-
-	private void runTasks() {
-		Task task = null;
-		while ((task = queue.peek()) != null) {
-			if (task.isCanceled()) {
-				queue.remove();
-				continue;
+		while (true) {
+			Task task = null;
+			try {
+				task = queue.take();
+				assert task.getStart() >= System.currentTimeMillis();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
 			}
-			if (task.getStart() > System.currentTimeMillis())
+			if (task.isCanceled())
 				continue;
-			task = queue.poll();
+
 			task.run();
 
 			if (!task.isCanceled()) {
@@ -57,7 +49,7 @@ public class TaskManager {
 						times = task.subtractTime();
 					if (times == null || times > 0) {
 						task.reschedule();
-						queue.add(task);
+						schedule(task);
 					}
 				}
 			}

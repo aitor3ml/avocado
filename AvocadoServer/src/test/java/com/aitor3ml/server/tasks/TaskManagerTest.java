@@ -1,8 +1,8 @@
 package com.aitor3ml.server.tasks;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.junit.Test;
 
@@ -67,10 +67,16 @@ public class TaskManagerTest {
 				bTask.cancel();
 			}
 		});
-		while (taskManager.hasTasks())
-			taskManager.run();
 
-		assertTrue("should not have tasks", !taskManager.hasTasks());
+		new Timer().schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				System.exit(0);
+			}
+		}, 30000L);
+
+		taskManager.run();
 	}
 
 }
