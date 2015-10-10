@@ -20,14 +20,14 @@ public class ServerKernel {
 	public ServerKernel(ServerConfig serverConfig, NetworkingListener listener) {
 		this.serverConfig = serverConfig;
 		taskManager = new TaskManager();
-		networkingManager = initNetworking(listener);
+		networkingManager = initNetworking(taskManager, listener);
 	}
 
-	private NetworkingManager initNetworking(NetworkingListener listener) {
+	private NetworkingManager initNetworking(TaskManager taskManager, NetworkingListener listener) {
 		if (listener == null)
 			return null;
 		try {
-			return new NetworkingManager(serverConfig.port, listener);
+			return new NetworkingManager(taskManager, serverConfig.port, listener);
 		} catch (ServletException e) {
 			e.printStackTrace();
 		}

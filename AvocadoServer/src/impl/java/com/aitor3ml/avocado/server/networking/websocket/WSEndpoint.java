@@ -9,6 +9,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import com.aitor3ml.avocado.server.networking.NetworkingConnection;
 import com.aitor3ml.avocado.server.networking.NetworkingConnectionListener;
 import com.aitor3ml.avocado.server.networking.NetworkingManager;
+import com.aitor3ml.avocado.server.tasks.Task;
 
 @WebSocket
 public class WSEndpoint implements NetworkingConnection {
@@ -21,6 +22,8 @@ public class WSEndpoint implements NetworkingConnection {
 
 	private NetworkingConnectionListener listener;
 
+	private long last = 0;
+
 	public WSEndpoint(NetworkingManager networkingManager) {
 		this.networkingManager = networkingManager;
 		this.id = networkingManager.register(this);
@@ -29,22 +32,40 @@ public class WSEndpoint implements NetworkingConnection {
 	@OnWebSocketConnect
 	public void onConnect(Session session) {
 		this.session = session;
-		listener = networkingManager.connected(this);
-		if (listener != null)
-			listener.connected();
+		schedule(new WSEventHandler(nextStart()) {
+			@Override
+			public void run() {
+				listener = networkingManager.connected(WSEndpoint.this);
+				if (listener != null)
+					listener.connected();
+			}
+		});
+
 	}
 
 	@OnWebSocketMessage
 	public void onMessage(String msg) {
-		if (listener != null)
-			listener.message(msg);
+		if (listener == null)
+			return;
+		schedule(new WSEventHandler(nextStart()) {
+			@Override
+			public void run() {
+				if (listener != null)
+					listener.message(msg);
+			}
+		});
 	}
 
 	@OnWebSocketClose
 	public void onClose(int statusCode, String reason) {
-		if (listener != null)
-			listener.closed(statusCode);
-		networkingManager.unregister(this);
+		schedule(new WSEventHandler(nextStart()) {
+			@Override
+			public void run() {
+				if (listener != null)
+					listener.closed(statusCode);
+				networkingManager.unregister(WSEndpoint.this);
+			}
+		});
 	}
 
 	@Override
@@ -54,11 +75,32 @@ public class WSEndpoint implements NetworkingConnection {
 
 	@Override
 	public void close() {
-		session.close();
+		schedule(new WSEventHandler(nextStart()) {
+			@Override
+			public void run() {
+				session.close();
+			}
+		});
 	}
 
 	public long getId() {
 		return id;
 	}
 
+	private long nextStart() {
+		last = Math.max(last + 1, System.currentTimeMillis());
+		return last;
+	}
+
+	private void schedule(WSEventHandler task) {
+		networkingManager.schedule(task);
+	}
+
+	private static abstract class WSEventHandler extends Task {
+
+		public WSEventHandler(long start) {
+			super(start);
+		}
+
+	}
 }

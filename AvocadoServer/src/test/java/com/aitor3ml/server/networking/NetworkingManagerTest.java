@@ -17,7 +17,7 @@ public class NetworkingManagerTest implements NetworkingListener {
 
 	@Test
 	public void testSomeLibraryMethod() throws Exception {
-		NetworkingManager networkingManager = new NetworkingManager(new ServerConfig().port, this);
+		NetworkingManager networkingManager = new NetworkingManager(null, new ServerConfig().port, this);
 		networkingManager.start();
 
 		new Timer().schedule(new TimerTask() {
