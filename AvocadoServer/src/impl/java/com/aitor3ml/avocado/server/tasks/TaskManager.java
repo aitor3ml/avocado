@@ -39,7 +39,15 @@ public class TaskManager {
 			if (task.isCanceled())
 				continue;
 
-			task.run();
+			long delay = System.currentTimeMillis() - task.getStart();
+			if (delay > 50)
+				System.err.println("running " + delay + "ms late:" + task);
+
+			try {
+				task.run();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			if (!task.isCanceled()) {
 				Long period = task.getPeriod();
