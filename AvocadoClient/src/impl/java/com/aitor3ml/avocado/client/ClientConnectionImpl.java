@@ -1,5 +1,6 @@
 package com.aitor3ml.avocado.client;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -7,6 +8,8 @@ import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import com.aitor3ml.avocado.client.websocket.WSConnection;
+import com.aitor3ml.avocado.shared.networking.AvocadoDeserializer;
+import com.aitor3ml.avocado.shared.networking.Message;
 
 public class ClientConnectionImpl implements ClientConnection {
 
@@ -18,9 +21,13 @@ public class ClientConnectionImpl implements ClientConnection {
 
 	private final WSConnection socket;
 
-	public ClientConnectionImpl(String host, int port, ClientConnectionListener listener) throws URISyntaxException {
+	private final AvocadoDeserializer avocadoDeserializer;
+
+	public ClientConnectionImpl(String host, int port, ClientConnectionListener listener,
+			AvocadoDeserializer avocadoDeserializer) throws URISyntaxException {
 		uri = new URI("ws://" + host + ":" + port);
 		this.listener = listener;
+		this.avocadoDeserializer = avocadoDeserializer;
 
 		client = new WebSocketClient();
 		socket = new WSConnection(this);
@@ -46,6 +53,10 @@ public class ClientConnectionImpl implements ClientConnection {
 		listener.message(msg);
 	}
 
+	public void message(Message msg) {
+		listener.message(msg);
+	}
+
 	public void closed(int statusCode, String reason) {
 		listener.closed(statusCode, reason);
 	}
@@ -56,8 +67,17 @@ public class ClientConnectionImpl implements ClientConnection {
 	}
 
 	@Override
+	public void send(Message msg) throws IOException {
+		socket.send(msg);
+	}
+
+	@Override
 	public boolean isConnected() {
 		return client.isStarted();
+	}
+
+	public AvocadoDeserializer getAvocadoDeserializer() {
+		return avocadoDeserializer;
 	}
 
 }

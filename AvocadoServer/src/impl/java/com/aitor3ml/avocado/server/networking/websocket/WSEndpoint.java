@@ -1,5 +1,10 @@
 package com.aitor3ml.avocado.server.networking.websocket;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -10,6 +15,8 @@ import com.aitor3ml.avocado.server.networking.NetworkingConnection;
 import com.aitor3ml.avocado.server.networking.NetworkingConnectionListener;
 import com.aitor3ml.avocado.server.networking.NetworkingManager;
 import com.aitor3ml.avocado.server.tasks.Task;
+import com.aitor3ml.avocado.shared.networking.Message;
+import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
 
 @WebSocket
 public class WSEndpoint implements NetworkingConnection {
@@ -17,6 +24,8 @@ public class WSEndpoint implements NetworkingConnection {
 	private final NetworkingManager networkingManager;
 
 	private final long id;
+
+	private final ReentrantLock lock;
 
 	private Session session = null;
 
@@ -26,6 +35,7 @@ public class WSEndpoint implements NetworkingConnection {
 
 	public WSEndpoint(NetworkingManager networkingManager) {
 		this.networkingManager = networkingManager;
+		this.lock = new ReentrantLock(true);
 		this.id = networkingManager.register(this);
 	}
 
@@ -45,15 +55,35 @@ public class WSEndpoint implements NetworkingConnection {
 
 	@OnWebSocketMessage
 	public void onMessage(String msg) {
-		if (listener == null)
-			return;
-		schedule(new WSEventHandler(nextStart()) {
-			@Override
-			public void run() {
-				if (listener != null)
-					listener.message(msg);
-			}
-		});
+		lock.lock();
+		try {
+			schedule(new WSEventHandler(nextStart()) {
+				@Override
+				public void run() {
+					if (listener != null)
+						listener.message(msg);
+				}
+			});
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	@OnWebSocketMessage
+	public void onMessage(InputStream stream) throws IOException, ClassNotFoundException {
+		lock.lock();
+		try {
+			Message msg = BinaryCoder.decode(stream, networkingManager.getAvocadoDeserializer());
+			schedule(new WSEventHandler(nextStart()) {
+				@Override
+				public void run() {
+					if (listener != null)
+						listener.message(msg);
+				}
+			});
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	@OnWebSocketClose
@@ -71,6 +101,12 @@ public class WSEndpoint implements NetworkingConnection {
 	@Override
 	public void send(String text) {
 		session.getRemote().sendString(text, null);
+	}
+
+	@Override
+	public void send(Message message) throws IOException {
+		ByteBuffer bb = BinaryCoder.encode(message);
+		session.getRemote().sendBytes(bb, null);
 	}
 
 	@Override

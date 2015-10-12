@@ -10,6 +10,7 @@ import org.eclipse.jetty.server.Server;
 import com.aitor3ml.avocado.server.networking.websocket.WSHandler;
 import com.aitor3ml.avocado.server.tasks.Task;
 import com.aitor3ml.avocado.server.tasks.TaskManager;
+import com.aitor3ml.avocado.shared.networking.AvocadoDeserializer;
 
 public class NetworkingManager {
 
@@ -21,11 +22,15 @@ public class NetworkingManager {
 
 	private final NetworkingListener listener;
 
+	private final AvocadoDeserializer avocadoDeserializer;
+
 	private long nextId = 1L;
 
-	public NetworkingManager(TaskManager taskManager, int port, NetworkingListener listener) throws ServletException {
+	public NetworkingManager(TaskManager taskManager, int port, NetworkingListener listener,
+			AvocadoDeserializer avocadoDeserializer) throws ServletException {
 		this.taskManager = taskManager;
 		this.listener = listener;
+		this.avocadoDeserializer = avocadoDeserializer;
 
 		server = new Server(port);
 		server.setHandler(new WSHandler(this));
@@ -62,6 +67,10 @@ public class NetworkingManager {
 			return false;
 		taskManager.schedule(task);
 		return true;
+	}
+
+	public AvocadoDeserializer getAvocadoDeserializer() {
+		return avocadoDeserializer;
 	}
 
 }

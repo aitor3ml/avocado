@@ -2,6 +2,8 @@ package com.aitor3ml.avocado.client;
 
 import org.junit.Test;
 
+import com.aitor3ml.avocado.shared.networking.Message;
+
 public class ClientConnectionTest implements ClientConnectionListener {
 
 	private static final String HOST = "localhost";
@@ -10,7 +12,7 @@ public class ClientConnectionTest implements ClientConnectionListener {
 
 	@Test
 	public void test() throws Exception {
-		connection = ConnectionFactory.createConnection(HOST, PORT, this);
+		connection = ConnectionFactory.createConnection(HOST, PORT, this, null);
 		connection.connect();
 		Thread.sleep(5000);
 	}
@@ -23,6 +25,12 @@ public class ClientConnectionTest implements ClientConnectionListener {
 
 	@Override
 	public void message(String msg) {
+		System.out.println("message: " + msg);
+		connection.send("echo " + msg);
+	}
+
+	@Override
+	public void message(Message msg) {
 		System.out.println("message: " + msg);
 		connection.send("echo " + msg);
 	}

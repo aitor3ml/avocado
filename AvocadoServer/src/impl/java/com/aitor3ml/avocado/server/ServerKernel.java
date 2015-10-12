@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import com.aitor3ml.avocado.server.networking.NetworkingListener;
 import com.aitor3ml.avocado.server.networking.NetworkingManager;
 import com.aitor3ml.avocado.server.tasks.TaskManager;
+import com.aitor3ml.avocado.shared.networking.AvocadoDeserializer;
 
 public class ServerKernel {
 
@@ -14,20 +15,22 @@ public class ServerKernel {
 	private final NetworkingManager networkingManager;
 
 	public ServerKernel() {
-		this(new ServerConfig(), null);
+		this(new ServerConfig(), null, null);
 	}
 
-	public ServerKernel(ServerConfig serverConfig, NetworkingListener listener) {
+	public ServerKernel(ServerConfig serverConfig, NetworkingListener listener,
+			AvocadoDeserializer avocadoDeserializer) {
 		this.serverConfig = serverConfig;
 		taskManager = new TaskManager();
-		networkingManager = initNetworking(taskManager, listener);
+		networkingManager = initNetworking(taskManager, listener, avocadoDeserializer);
 	}
 
-	private NetworkingManager initNetworking(TaskManager taskManager, NetworkingListener listener) {
+	private NetworkingManager initNetworking(TaskManager taskManager, NetworkingListener listener,
+			AvocadoDeserializer avocadoDeserializer) {
 		if (listener == null)
 			return null;
 		try {
-			return new NetworkingManager(taskManager, serverConfig.port, listener);
+			return new NetworkingManager(taskManager, serverConfig.port, listener, avocadoDeserializer);
 		} catch (ServletException e) {
 			e.printStackTrace();
 		}

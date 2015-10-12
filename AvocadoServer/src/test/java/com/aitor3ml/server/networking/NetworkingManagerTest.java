@@ -12,12 +12,13 @@ import com.aitor3ml.avocado.server.networking.NetworkingConnection;
 import com.aitor3ml.avocado.server.networking.NetworkingConnectionListener;
 import com.aitor3ml.avocado.server.networking.NetworkingListener;
 import com.aitor3ml.avocado.server.networking.NetworkingManager;
+import com.aitor3ml.avocado.shared.networking.Message;
 
 public class NetworkingManagerTest implements NetworkingListener {
 
 	@Test
 	public void testSomeLibraryMethod() throws Exception {
-		NetworkingManager networkingManager = new NetworkingManager(null, new ServerConfig().port, this);
+		NetworkingManager networkingManager = new NetworkingManager(null, new ServerConfig().port, this, null);
 		networkingManager.start();
 
 		new Timer().schedule(new TimerTask() {
@@ -54,6 +55,11 @@ public class NetworkingManagerTest implements NetworkingListener {
 			@Override
 			public void closed(int statusCode) {
 				System.out.println("closed->" + statusCode);
+			}
+
+			@Override
+			public void message(Message msg) {
+				System.out.println(msg);
 			}
 		};
 	}
