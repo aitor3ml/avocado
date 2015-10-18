@@ -41,10 +41,14 @@ public class TaskManager {
 
 			long delay = System.currentTimeMillis() - task.getStart();
 			if (delay > 50)
-				System.err.println("running " + delay + "ms late:" + task);
+				System.err.println(delay + "ms late:" + task);
 
 			try {
+				long start = System.currentTimeMillis();
 				task.run();
+				long time = System.currentTimeMillis() - start;
+				if (time > 50)
+					System.err.println(time + "ms to run " + task);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
