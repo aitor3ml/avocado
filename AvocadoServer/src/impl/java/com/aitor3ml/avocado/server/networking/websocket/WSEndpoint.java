@@ -43,26 +43,23 @@ public class WSEndpoint implements NetworkingConnection {
 	@OnWebSocketConnect
 	public void onConnect(Session session) {
 		this.session = session;
-		schedule(new WSEventHandler(nextStart()) {
-			@Override
-			public void run() {
-				listener = networkingManager.connected(WSEndpoint.this);
-				if (listener != null)
-					listener.connected();
-			}
-		});
-
+		schedule(new WSEventConnect());
 	}
 
 	@OnWebSocketMessage
 	public void onMessage(String msg) {
 		lock.lock();
 		try {
-			schedule(new WSEventHandler(nextStart()) {
+			schedule(new WSEventHandler() {
 				@Override
 				public void run() {
 					if (listener != null)
 						listener.message(msg);
+				}
+
+				@Override
+				public String toString() {
+					return super.toString() + ":" + msg;
 				}
 			});
 		} finally {
@@ -75,13 +72,7 @@ public class WSEndpoint implements NetworkingConnection {
 		lock.lock();
 		try {
 			Message msg = BinaryCoder.decode(stream, networkingManager.getAvocadoDeserializer());
-			schedule(new WSEventHandler(nextStart()) {
-				@Override
-				public void run() {
-					if (listener != null)
-						listener.message(msg);
-				}
-			});
+			schedule(new WSEventMessage(msg));
 		} finally {
 			lock.unlock();
 		}
@@ -89,14 +80,7 @@ public class WSEndpoint implements NetworkingConnection {
 
 	@OnWebSocketClose
 	public void onClose(int statusCode, String reason) {
-		schedule(new WSEventHandler(nextStart()) {
-			@Override
-			public void run() {
-				if (listener != null)
-					listener.closed(statusCode);
-				networkingManager.unregister(WSEndpoint.this);
-			}
-		});
+		schedule(new WSEventClose(statusCode, reason));
 	}
 
 	@Override
@@ -116,12 +100,7 @@ public class WSEndpoint implements NetworkingConnection {
 
 	@Override
 	public void close() {
-		schedule(new WSEventHandler(nextStart()) {
-			@Override
-			public void run() {
-				session.close();
-			}
-		});
+		session.close();
 	}
 
 	public long getId() {
@@ -137,11 +116,74 @@ public class WSEndpoint implements NetworkingConnection {
 		networkingManager.schedule(task);
 	}
 
-	private static abstract class WSEventHandler extends Task {
+	private abstract class WSEventHandler extends Task {
+		public WSEventHandler() {
+			super(nextStart());
+		}
+	}
 
-		public WSEventHandler(long start) {
-			super(start);
+	private class WSEventConnect extends WSEventHandler {
+
+		public WSEventConnect() {
+			super();
 		}
 
+		@Override
+		public void run() {
+			listener = networkingManager.connected(WSEndpoint.this);
+			if (listener != null)
+				listener.connected();
+		}
+
+		@Override
+		public String toString() {
+			return "WSEventConnect";
+		}
 	}
+
+	private class WSEventMessage extends WSEventHandler {
+
+		private final Message msg;
+
+		public WSEventMessage(Message msg) {
+			super();
+			this.msg = msg;
+		}
+
+		@Override
+		public void run() {
+			if (listener != null)
+				listener.message(msg);
+		}
+
+		@Override
+		public String toString() {
+			return "WSEventMessage [msg=" + msg + "]";
+		}
+	}
+
+	private class WSEventClose extends WSEventHandler {
+
+		private final int statusCode;
+		private final String reason;
+
+		public WSEventClose(int statusCode, String reason) {
+			super();
+			this.statusCode = statusCode;
+			this.reason = reason;
+		}
+
+		@Override
+		public void run() {
+			if (listener != null)
+				listener.closed(statusCode);
+			networkingManager.unregister(WSEndpoint.this);
+		}
+
+		@Override
+		public String toString() {
+			return "WSEventClose [statusCode=" + statusCode + ", reason=" + reason + "]";
+		}
+	}
+
 }
