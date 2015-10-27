@@ -43,11 +43,6 @@ public class NetworkingManagerTest implements NetworkingListener {
 		return new NetworkingConnectionListener() {
 
 			@Override
-			public void message(String msg) {
-				System.out.println("message->" + msg);
-			}
-
-			@Override
 			public void connected() {
 				System.out.println("connected");
 			}

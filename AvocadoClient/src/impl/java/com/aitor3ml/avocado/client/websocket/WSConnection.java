@@ -16,6 +16,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import com.aitor3ml.avocado.client.ClientConnectionImpl;
 import com.aitor3ml.avocado.shared.networking.Message;
 import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
+import com.aitor3ml.avocado.shared.networking.text.TextCoder;
 
 @WebSocket
 public class WSConnection {
@@ -47,10 +48,21 @@ public class WSConnection {
 	public void onMessage(String msg) {
 		lock.lock();
 		try {
-			clientConnection.message(msg);
+			String[] parts = msg.split(":", 2);
+			switch (parts[0]) {
+			case "data":
+				clientConnection.message(TextCoder.decode(parts[1]));
+				break;
+			case "ping":
+				session.getRemote().sendString("pong:" + parts[1], null);
+				break;
+			default:
+				throw new RuntimeException("unkown message type:" + parts[0]);
+			}
 		} finally {
 			lock.unlock();
 		}
+
 	}
 
 	@OnWebSocketMessage
@@ -67,10 +79,6 @@ public class WSConnection {
 	@OnWebSocketError
 	public void onError(Throwable t) {
 		t.printStackTrace();
-	}
-
-	public void send(String msg) {
-		session.getRemote().sendString(msg, null);
 	}
 
 	public void send(Message msg) throws IOException {

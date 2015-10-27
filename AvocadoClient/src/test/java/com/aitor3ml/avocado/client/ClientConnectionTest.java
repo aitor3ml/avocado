@@ -1,5 +1,7 @@
 package com.aitor3ml.avocado.client;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
 import com.aitor3ml.avocado.shared.networking.Message;
@@ -20,24 +22,38 @@ public class ClientConnectionTest implements ClientConnectionListener {
 	@Override
 	public void connected() {
 		System.out.println("connected");
-		connection.send("conectado");
-	}
-
-	@Override
-	public void message(String msg) {
-		System.out.println("message: " + msg);
-		connection.send("echo " + msg);
+		send("conectado");
 	}
 
 	@Override
 	public void message(Message msg) {
 		System.out.println("message: " + msg);
-		connection.send("echo " + msg);
+		send("echo " + msg);
 	}
 
 	@Override
 	public void closed(int statusCode, String reason) {
 		System.out.println("closed: " + statusCode + " - " + reason);
+	}
+
+	private void send(String msg) {
+		try {
+			connection.send(new TextMessage(msg));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static class TextMessage implements Message {
+		private final String text;
+
+		private TextMessage(String text) {
+			this.text = text;
+		}
+
+		public String getText() {
+			return text;
+		}
 	}
 
 }

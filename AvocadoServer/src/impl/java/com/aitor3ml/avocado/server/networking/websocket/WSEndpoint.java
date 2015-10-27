@@ -3,6 +3,8 @@ package com.aitor3ml.avocado.server.networking.websocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -18,6 +20,7 @@ import com.aitor3ml.avocado.server.networking.NetworkingManager;
 import com.aitor3ml.avocado.server.tasks.Task;
 import com.aitor3ml.avocado.shared.networking.Message;
 import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
+import com.aitor3ml.avocado.shared.networking.text.TextCoder;
 
 @WebSocket
 public class WSEndpoint implements NetworkingConnection {
@@ -29,6 +32,8 @@ public class WSEndpoint implements NetworkingConnection {
 	private final ReentrantLock lock;
 
 	private Session session = null;
+
+	private Timer timer = null;
 
 	private NetworkingConnectionListener listener;
 
@@ -43,6 +48,8 @@ public class WSEndpoint implements NetworkingConnection {
 	@OnWebSocketConnect
 	public void onConnect(Session session) {
 		this.session = session;
+		timer = new Timer();
+		timer.schedule(new PingCheck(), 1000L, 60000L);
 		schedule(new WSEventConnect());
 	}
 
@@ -50,18 +57,20 @@ public class WSEndpoint implements NetworkingConnection {
 	public void onMessage(String msg) {
 		lock.lock();
 		try {
-			schedule(new WSEventHandler() {
-				@Override
-				public void run() {
-					if (listener != null)
-						listener.message(msg);
-				}
-
-				@Override
-				public String toString() {
-					return super.toString() + ":" + msg;
-				}
-			});
+			String[] parts = msg.split(":", 2);
+			switch (parts[0]) {
+			case "data":
+				schedule(new WSEventMessage(TextCoder.decode(parts[1])));
+				break;
+			case "pong":
+				long time = Long.parseLong(parts[1]);
+				long ping = System.currentTimeMillis() - time;
+				if (ping > 200)
+					System.out.println("ping:" + ping + "ms");
+				break;
+			default:
+				throw new RuntimeException("unkown message type:" + parts[0]);
+			}
 		} finally {
 			lock.unlock();
 		}
@@ -80,6 +89,7 @@ public class WSEndpoint implements NetworkingConnection {
 
 	@OnWebSocketClose
 	public void onClose(int statusCode, String reason) {
+		timer.cancel();
 		schedule(new WSEventClose(statusCode, reason));
 	}
 
@@ -183,6 +193,13 @@ public class WSEndpoint implements NetworkingConnection {
 		@Override
 		public String toString() {
 			return "WSEventClose [statusCode=" + statusCode + ", reason=" + reason + "]";
+		}
+	}
+
+	private class PingCheck extends TimerTask {
+		@Override
+		public void run() {
+			session.getRemote().sendString("ping:" + System.currentTimeMillis(), null);
 		}
 	}
 

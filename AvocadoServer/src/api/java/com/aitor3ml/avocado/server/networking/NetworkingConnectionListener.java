@@ -6,8 +6,6 @@ public interface NetworkingConnectionListener {
 
 	public void connected();
 
-	public void message(String msg);
-
 	public void message(Message msg);
 
 	public void closed(int statusCode);

@@ -49,21 +49,12 @@ public class ClientConnectionImpl implements ClientConnection {
 		listener.connected();
 	}
 
-	public void message(String msg) {
-		listener.message(msg);
-	}
-
 	public void message(Message msg) {
 		listener.message(msg);
 	}
 
 	public void closed(int statusCode, String reason) {
 		listener.closed(statusCode, reason);
-	}
-
-	@Override
-	public void send(String msg) {
-		socket.send(msg);
 	}
 
 	@Override

@@ -10,8 +10,6 @@ public interface ClientConnection {
 
 	public boolean isConnected();
 
-	public void send(String msg);
-
 	public void send(Message msg) throws IOException;
 
 	public void disconnect() throws Exception;
