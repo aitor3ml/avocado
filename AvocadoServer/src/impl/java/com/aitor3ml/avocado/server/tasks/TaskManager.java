@@ -9,6 +9,8 @@ public class TaskManager {
 	private final Timer timer = new Timer();
 	private final PriorityBlockingQueue<Task> queue;
 
+	private long last = 0L;
+
 	public TaskManager() {
 		queue = new PriorityBlockingQueue<Task>();
 	}
@@ -39,14 +41,18 @@ public class TaskManager {
 			if (task.isCanceled())
 				continue;
 
-			long delay = System.currentTimeMillis() - task.getStart();
+			long start = task.getStart();
+			assert start >= last;
+			last = start;
+
+			long delay = System.currentTimeMillis() - start;
 			if (delay > 50)
 				System.err.println(delay + "ms late:" + task.toString());
 
 			try {
-				long start = System.currentTimeMillis();
+				long t = System.currentTimeMillis();
 				task.run();
-				long time = System.currentTimeMillis() - start;
+				long time = System.currentTimeMillis() - t;
 				if (time > 50)
 					System.err.println(time + "ms to run " + task.toString());
 			} catch (Exception e) {
