@@ -37,6 +37,8 @@ dependencies {
     testCompile sourceSets.impl.output
     runtime configurations.apiRuntime
     runtime configurations.implRuntime
+    
+    compile project(':AvocadoShared')
 }
 
 jar {

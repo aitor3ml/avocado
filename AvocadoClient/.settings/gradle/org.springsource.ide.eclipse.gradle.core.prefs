@@ -1,5 +1,5 @@
 #org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
-#Sat Aug 29 15:40:02 UTC 2015
-build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;
+#Tue Feb 23 20:10:14 UTC 2016
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;../AvocadoShared;
 org.springsource.ide.eclipse.gradle.linkedresources=
 org.springsource.ide.eclipse.gradle.rootprojectloc=
