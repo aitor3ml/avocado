@@ -56,4 +56,9 @@ public class ClientConnectionTest implements ClientConnectionListener {
 		}
 	}
 
+	@Override
+	public void error(Throwable t) {
+		t.printStackTrace();
+	}
+
 }

@@ -71,4 +71,8 @@ public class ClientConnectionImpl implements ClientConnection {
 		return avocadoDeserializer;
 	}
 
+	public void error(Throwable t) {
+		listener.error(t);
+	}
+
 }

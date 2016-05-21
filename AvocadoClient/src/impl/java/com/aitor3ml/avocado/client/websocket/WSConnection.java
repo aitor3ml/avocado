@@ -78,7 +78,7 @@ public class WSConnection {
 
 	@OnWebSocketError
 	public void onError(Throwable t) {
-		t.printStackTrace();
+		clientConnection.error(t);
 	}
 
 	public void send(Message msg) throws IOException {

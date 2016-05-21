@@ -10,4 +10,6 @@ public interface ClientConnectionListener {
 
 	void closed(int statusCode, String reason);
 
+	void error(Throwable t);
+
 }
