@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import com.aitor3ml.avocado.client.websocket.WSConnection;
 import com.aitor3ml.avocado.shared.networking.AvocadoDeserializer;
+import com.aitor3ml.avocado.shared.networking.AvocadoKeyStore;
 import com.aitor3ml.avocado.shared.networking.Message;
 
 public class ClientConnectionImpl implements ClientConnection {
@@ -23,13 +26,22 @@ public class ClientConnectionImpl implements ClientConnection {
 
 	private final AvocadoDeserializer avocadoDeserializer;
 
-	public ClientConnectionImpl(String host, int port, ClientConnectionListener listener,
+	public ClientConnectionImpl(String host, int port, boolean ssl, ClientConnectionListener listener,
 			AvocadoDeserializer avocadoDeserializer) throws URISyntaxException {
-		uri = new URI("ws://" + host + ":" + port);
+		if (ssl) {
+			uri = new URI("wss://" + host + ":" + port);
+			SslContextFactory sslContextFactory = new SslContextFactory();
+			sslContextFactory.setKeyStoreResource(Resource.newResource(AvocadoKeyStore.getUrl()));
+			sslContextFactory.setKeyStorePassword(AvocadoKeyStore.getStorePassword());
+			sslContextFactory.setKeyManagerPassword(AvocadoKeyStore.getKeyPassword());
+			client = new WebSocketClient(sslContextFactory);
+		} else {
+			uri = new URI("ws://" + host + ":" + port);
+			client = new WebSocketClient();
+		}
 		this.listener = listener;
 		this.avocadoDeserializer = avocadoDeserializer;
 
-		client = new WebSocketClient();
 		socket = new WSConnection(this);
 	}
 

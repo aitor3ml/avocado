@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import com.aitor3ml.avocado.shared.networking.Message;
 
-public class ClientConnectionTest implements ClientConnectionListener {
+public class ClientSslConnectionTest implements ClientConnectionListener {
 
 	private static final String HOST = "localhost";
 	private static final int PORT = 1666;
@@ -15,7 +15,7 @@ public class ClientConnectionTest implements ClientConnectionListener {
 
 	@Test
 	public void test() throws Exception {
-		connection = ConnectionFactory.createConnection(HOST, PORT, false, this, null);
+		connection = ConnectionFactory.createConnection(HOST, PORT, true, this, null);
 		connection.connect();
 		Thread.sleep(5000);
 	}

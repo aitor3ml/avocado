@@ -18,7 +18,8 @@ public class NetworkingManagerTest implements NetworkingListener {
 
 	@Test
 	public void testSomeLibraryMethod() throws Exception {
-		NetworkingManager networkingManager = new NetworkingManager(null, new ServerConfig().port, this, null);
+		ServerConfig config = new ServerConfig();
+		NetworkingManager networkingManager = new NetworkingManager(null, config.wsPort, config.wssPort, this, null);
 		networkingManager.start();
 
 		new Timer().schedule(new TimerTask() {

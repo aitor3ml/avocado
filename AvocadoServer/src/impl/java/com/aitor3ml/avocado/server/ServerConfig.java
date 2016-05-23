@@ -2,6 +2,7 @@ package com.aitor3ml.avocado.server;
 
 public class ServerConfig {
 
-	public int port = 1666;
+	public Integer wsPort = 1666;
+	public Integer wssPort = 1667;
 
 }

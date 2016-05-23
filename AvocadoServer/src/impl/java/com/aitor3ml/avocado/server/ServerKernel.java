@@ -30,7 +30,8 @@ public class ServerKernel {
 		if (listener == null)
 			return null;
 		try {
-			return new NetworkingManager(taskManager, serverConfig.port, listener, avocadoDeserializer);
+			return new NetworkingManager(taskManager, serverConfig.wsPort, serverConfig.wssPort, listener,
+					avocadoDeserializer);
 		} catch (ServletException e) {
 			e.printStackTrace();
 		}
