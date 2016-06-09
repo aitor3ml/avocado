@@ -11,11 +11,18 @@ public class TaskManager {
 
 	private long last = 0L;
 
+	private boolean stoping = false;
+	private boolean stopped = false;
+
 	public TaskManager() {
 		queue = new PriorityBlockingQueue<Task>();
 	}
 
 	public void schedule(Task task) {
+		if (stoping) {
+			System.out.println("rejected task " + task);
+			return;
+		}
 		long delay = task.getStart() - System.currentTimeMillis();
 		if (delay > 0)
 			timer.schedule(new TimerTask() {
@@ -29,7 +36,7 @@ public class TaskManager {
 	}
 
 	public void run() {
-		while (true) {
+		while (!stoping) {
 			Task task = null;
 			try {
 				task = queue.take();
@@ -73,6 +80,15 @@ public class TaskManager {
 				}
 			}
 		}
+		stopped = true;
+	}
+
+	public void stop() {
+		stoping = true;
+	}
+
+	public boolean isStopped() {
+		return stopped;
 	}
 
 }
