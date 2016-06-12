@@ -2,6 +2,7 @@ package com.aitor3ml.avocado.server.networking.websocket;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -201,6 +202,13 @@ public class WSEndpoint implements NetworkingConnection {
 		public void run() {
 			session.getRemote().sendString("ping:" + System.currentTimeMillis(), null);
 		}
+	}
+
+	@Override
+	public InetSocketAddress getRemoteAddress() {
+		if (session == null)
+			return null;
+		return session.getRemoteAddress();
 	}
 
 }
