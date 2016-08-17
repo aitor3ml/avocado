@@ -15,52 +15,52 @@ public class TaskManagerTest {
 	public void testSomeLibraryMethod() {
 		TaskManager taskManager = new TaskManager();
 		long now = System.currentTimeMillis();
-		Task aTask = new Task(now + 5000L, 3000L) {
+		Task aTask = new Task(now + 500L, 300L) {
 			@Override
 			public void run() {
-				System.out.println("cada 3000ms eternamente " + new Date());
+				System.out.println("cada 300ms eternamente " + new Date());
 			}
 		};
 		taskManager.schedule(aTask);
-		taskManager.schedule(new Task(now + 8000L) {
+		taskManager.schedule(new Task(now + 800L) {
 			@Override
 			public void run() {
 				System.out.println("fin" + new Date());
 			}
 		});
-		taskManager.schedule(new Task(now + 1750L, 500L, 10) {
+		taskManager.schedule(new Task(now + 175L, 50L, 10) {
 			@Override
 			public void run() {
-				System.out.println("cada 500ms 10 veces " + new Date());
+				System.out.println("cada 50ms 10 veces " + new Date());
 			}
 		});
-		Task bTask = new Task(now + 2500L, 4000L) {
+		Task bTask = new Task(now + 250L, 400L) {
 			@Override
 			public void run() {
-				System.out.println("cada 8000ms eternamente " + new Date());
+				System.out.println("cada 800ms eternamente " + new Date());
 			}
 		};
 		taskManager.schedule(bTask);
-		taskManager.schedule(new Task(now + 1000L) {
+		taskManager.schedule(new Task(now + 100L) {
 			@Override
 			public void run() {
 				System.out.println("inicio " + new Date());
 			}
 		});
-		taskManager.schedule(new Task(now + 2000L) {
+		taskManager.schedule(new Task(now + 200L) {
 			@Override
 			public void run() {
 				System.out.println("medio " + new Date());
 			}
 		});
-		taskManager.schedule(new Task(now + 5000L, 1000L, 2) {
+		taskManager.schedule(new Task(now + 500L, 100L, 2) {
 			@Override
 			public void run() {
-				System.out.println("cada 1000ms 2 veces " + new Date());
+				System.out.println("cada 100ms 2 veces " + new Date());
 			}
 		});
 
-		taskManager.schedule(new Task(now + 10000L) {
+		taskManager.schedule(new Task(now + 1000L) {
 			@Override
 			public void run() {
 				aTask.cancel();
@@ -72,9 +72,9 @@ public class TaskManagerTest {
 
 			@Override
 			public void run() {
-				System.exit(0);
+				taskManager.stop();
 			}
-		}, 30000L);
+		}, 3000L);
 
 		taskManager.run();
 	}

@@ -1,22 +1,13 @@
+apply plugin: "eclipse"
 apply plugin: "java"
 apply plugin: "maven"
 
-group = "myorg"
-version = 1.0
+group = 'com.aitor3ml.avocado'
+version = '0.9.0'
 
 repositories {
-    mavenCentral()
-}
-
-sourceSets.all { set ->
-    def jarTask = task("${set.name}Jar", type: Jar) {
-        baseName = baseName + "-$set.name"
-        from set.output
-    }
-
-    artifacts {
-        archives jarTask
-    }
+    mavenLocal()
+    jcenter()
 }
 
 sourceSets {
@@ -25,20 +16,17 @@ sourceSets {
 }
 
 dependencies {
-	compile 'org.eclipse.jetty.websocket:websocket-server:9.3.2.v20150730'
+    apiCompile project(':AvocadoShared')
 	
-    apiCompile 'commons-codec:commons-codec:1.5'
-
     implCompile sourceSets.api.output
-    implCompile 'commons-lang:commons-lang:2.6'
-
-    testCompile 'junit:junit:4.9'
+    implCompile project(':AvocadoShared')
+	implCompile 'org.eclipse.jetty.websocket:websocket-server:9.3.2.v20150730'
+	
     testCompile sourceSets.api.output
     testCompile sourceSets.impl.output
-    runtime configurations.apiRuntime
-    runtime configurations.implRuntime
-    
-    compile project(':AvocadoShared')
+    testCompile project(':AvocadoShared')
+    testCompile 'junit:junit:4.9'
+    testCompile 'org.eclipse.jetty.websocket:websocket-server:9.3.2.v20150730'
 }
 
 jar {
@@ -46,24 +34,9 @@ jar {
     from sourceSets.impl.output
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri("${buildDir}/repo"))
-
-            addFilter("main") { artifact, file -> artifact.name == project.name }
-            ["api", "impl"].each { type ->
-                addFilter(type) { artifact, file -> artifact.name.endsWith("-$type") }
-                
-                // We now have to map our configurations to the correct maven scope for each pom
-                ["compile", "runtime"].each { scope ->
-                    configuration = configurations[type + scope.capitalize()]
-                    ["main", type].each { pomName ->
-                        pom(pomName).scopeMappings.addMapping 1, configuration, scope
-                    }
-                }
-            }
-
-        }
-    }
+task sourcesJar(type:Jar){
+    from sourceSets.main.allSource
+    classifier = 'sources'
 }
+
+artifacts {  archives sourcesJar  }
