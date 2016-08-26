@@ -20,13 +20,13 @@ dependencies {
 	
     implCompile sourceSets.api.output
     implCompile project(':AvocadoShared')
-	implCompile 'org.eclipse.jetty.websocket:websocket-server:9.3.2.v20150730'
+	implCompile 'org.eclipse.jetty.websocket:websocket-server:9.3.11.v20160721'
 	
     testCompile sourceSets.api.output
     testCompile sourceSets.impl.output
     testCompile project(':AvocadoShared')
     testCompile 'junit:junit:4.9'
-    testCompile 'org.eclipse.jetty.websocket:websocket-server:9.3.2.v20150730'
+    testCompile 'org.eclipse.jetty.websocket:websocket-server:9.3.11.v20160721'
 }
 
 jar {
