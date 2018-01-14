@@ -15,7 +15,19 @@ public class ServerKernel {
 	private final NetworkingManager networkingManager;
 
 	public ServerKernel() {
-		this(new ServerConfig(), null, null);
+		this(new ServerConfig() {
+
+			@Override
+			public Integer getWsPort() {
+				return 1666;
+			}
+
+			@Override
+			public Integer getWssPort() {
+				return 1667;
+			}
+
+		}, null, null);
 	}
 
 	public ServerKernel(ServerConfig serverConfig, NetworkingListener listener,
@@ -30,7 +42,7 @@ public class ServerKernel {
 		if (listener == null)
 			return null;
 		try {
-			return new NetworkingManager(taskManager, serverConfig.wsPort, serverConfig.wssPort, listener,
+			return new NetworkingManager(taskManager, serverConfig.getWsPort(), serverConfig.getWssPort(), listener,
 					avocadoDeserializer);
 		} catch (ServletException e) {
 			e.printStackTrace();

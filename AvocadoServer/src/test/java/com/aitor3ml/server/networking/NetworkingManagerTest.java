@@ -18,8 +18,21 @@ public class NetworkingManagerTest implements NetworkingListener {
 
 	@Test
 	public void testSomeLibraryMethod() throws Exception {
-		ServerConfig config = new ServerConfig();
-		NetworkingManager networkingManager = new NetworkingManager(null, config.wsPort, config.wssPort, this, null);
+		ServerConfig config = new ServerConfig() {
+
+			@Override
+			public Integer getWsPort() {
+				return 1666;
+			}
+
+			@Override
+			public Integer getWssPort() {
+				return 1667;
+			}
+
+		};
+		NetworkingManager networkingManager = new NetworkingManager(null, config.getWsPort(), config.getWssPort(), this,
+				null);
 		networkingManager.start();
 
 		new Timer().schedule(new TimerTask() {

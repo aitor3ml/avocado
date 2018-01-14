@@ -1,8 +1,9 @@
 package com.aitor3ml.avocado.server;
 
-public class ServerConfig {
+public interface ServerConfig {
 
-	public Integer wsPort = 1666;
-	public Integer wssPort = 1667;
+	Integer getWsPort();
+
+	Integer getWssPort();
 
 }
