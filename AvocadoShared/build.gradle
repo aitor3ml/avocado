@@ -1,36 +1,27 @@
-apply plugin: "eclipse"
-apply plugin: "java"
-apply plugin: "maven"
+plugins {
+    id 'java-library'
+    id 'eclipse'
+}
 
 group = 'com.aitor3ml.avocado'
-version = '0.9.0'
+version = '0.9.1'
 
 repositories {
     mavenLocal()
     jcenter()
 }
 
-sourceSets {
-    api
-    impl
-}
-
 dependencies {
-    implCompile sourceSets.api.output
-
-    testCompile 'junit:junit:4.9'
-    testCompile sourceSets.api.output
-    testCompile sourceSets.impl.output
+    testImplementation 'junit:junit:4.12'
 }
 
-jar {
-    from sourceSets.api.output
-    from sourceSets.impl.output
-}
-
-task sourcesJar(type:Jar){
-    from sourceSets.main.allSource
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
+    from sourceSets.main.allSource
 }
 
 artifacts {  archives sourcesJar  }
+
+eclipse.project {
+  	natures 'org.eclipse.buildship.core.gradleprojectnature'
+}
