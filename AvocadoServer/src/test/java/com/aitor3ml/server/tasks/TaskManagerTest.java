@@ -13,9 +13,9 @@ public class TaskManagerTest {
 
 	@Test
 	public void testSomeLibraryMethod() {
-		TaskManager taskManager = new TaskManager();
+		final TaskManager taskManager = new TaskManager();
 		long now = System.currentTimeMillis();
-		Task aTask = new Task(now + 500L, 300L) {
+		final Task aTask = new Task(now + 500L, 300L) {
 			@Override
 			public void run() {
 				System.out.println("cada 300ms eternamente " + new Date());
@@ -34,7 +34,7 @@ public class TaskManagerTest {
 				System.out.println("cada 50ms 10 veces " + new Date());
 			}
 		});
-		Task bTask = new Task(now + 250L, 400L) {
+		final Task bTask = new Task(now + 250L, 400L) {
 			@Override
 			public void run() {
 				System.out.println("cada 800ms eternamente " + new Date());
