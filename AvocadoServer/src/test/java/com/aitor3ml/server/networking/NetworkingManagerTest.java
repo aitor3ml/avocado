@@ -31,8 +31,8 @@ public class NetworkingManagerTest implements NetworkingListener {
 			}
 
 		};
-		NetworkingManager networkingManager = new NetworkingManager(null, config.getWsPort(), config.getWssPort(), this,
-				null);
+		final NetworkingManager networkingManager = new NetworkingManager(null, config.getWsPort(), config.getWssPort(),
+				this, null);
 		networkingManager.start();
 
 		new Timer().schedule(new TimerTask() {

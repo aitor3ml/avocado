@@ -20,7 +20,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin/default"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8/"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7/"/>
 	<classpathentry kind="src" path="/AvocadoShared"/>
 	<classpathentry sourcepath="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-client/9.2.28.v20190418/35c96806b67f46b11d012e0aa355ae418e3ac3cf/websocket-client-9.2.28.v20190418-sources.jar" kind="lib" path="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-client/9.2.28.v20190418/2ba2945c77d8f5249063885e22688d9207c87c8d/websocket-client-9.2.28.v20190418.jar">
 		<attributes>

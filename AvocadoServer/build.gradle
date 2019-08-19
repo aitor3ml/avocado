@@ -6,6 +6,9 @@ plugins {
 group = 'com.aitor3ml.avocado'
 version = '0.9.1'
 
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
 repositories {
     mavenLocal()
     jcenter()
