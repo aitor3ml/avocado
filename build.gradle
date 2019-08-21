@@ -1,7 +1,8 @@
+apply plugin: 'maven-publish'
+
 subprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'eclipse'
-
 	group = 'com.aitor3ml.avocado'
 	version = '0.9.1'
 	
@@ -27,6 +28,19 @@ subprojects {
 	eclipse.project {
 	  	natures 'org.eclipse.buildship.core.gradleprojectnature'
 	}
+	
+    publishing {
+        publications {
+            "$project.name"(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
+                
+				artifact sourcesJar
+            }
+        }
+    }
 }
 
 project(":AvocadoClient") {
