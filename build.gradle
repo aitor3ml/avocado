@@ -1,0 +1,56 @@
+subprojects {
+	apply plugin: 'java-library'
+	apply plugin: 'eclipse'
+
+	group = 'com.aitor3ml.avocado'
+	version = '0.9.1'
+	
+	ext {
+		jettyVersion = "9.2.28.v20190418"
+	}
+
+	sourceCompatibility = '1.7'
+	targetCompatibility = '1.7'
+
+	repositories {
+	    mavenLocal()
+	    jcenter()
+	}
+	
+	task sourcesJar(type: Jar, dependsOn: classes) {
+	    classifier = 'sources'
+	    from sourceSets.main.allSource
+	}
+	
+	artifacts {  archives sourcesJar  }
+	
+	eclipse.project {
+	  	natures 'org.eclipse.buildship.core.gradleprojectnature'
+	}
+}
+
+project(":AvocadoClient") {
+	dependencies {
+	    api project(':AvocadoShared')
+	
+	    implementation group: 'org.eclipse.jetty.websocket', name: 'websocket-client', version: "$jettyVersion"
+	    
+	    testImplementation 'junit:junit:4.12'
+	}
+}
+
+project(":AvocadoServer") {
+	dependencies {
+	    api project(':AvocadoShared')
+	    
+	    implementation group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: "$jettyVersion"
+	
+	    testImplementation 'junit:junit:4.12'
+	}
+}
+
+project(":AvocadoShared") {
+	dependencies {
+	    testImplementation 'junit:junit:4.12'
+	}
+}
