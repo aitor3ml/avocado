@@ -1,62 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry output="bin/main" kind="src" path="src/main/java">
+	<classpathentry kind="src" output="bin/main" path="src/main/java">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry output="bin/main" kind="src" path="src/main/resources">
+	<classpathentry kind="src" output="bin/main" path="src/main/resources">
 		<attributes>
 			<attribute name="gradle_scope" value="main"/>
 			<attribute name="gradle_used_by_scope" value="main,test"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry output="bin/test" kind="src" path="src/test/java">
+	<classpathentry kind="src" output="bin/test" path="src/test/java">
 		<attributes>
 			<attribute name="gradle_scope" value="test"/>
 			<attribute name="gradle_used_by_scope" value="test"/>
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="output" path="bin/default"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7/"/>
+	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
 	<classpathentry kind="src" path="/AvocadoShared"/>
-	<classpathentry sourcepath="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-client/9.2.28.v20190418/35c96806b67f46b11d012e0aa355ae418e3ac3cf/websocket-client-9.2.28.v20190418-sources.jar" kind="lib" path="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-client/9.2.28.v20190418/2ba2945c77d8f5249063885e22688d9207c87c8d/websocket-client-9.2.28.v20190418.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-common/9.2.28.v20190418/20b6f423fffb3c41b643976c139f0ff7914cd6ad/websocket-common-9.2.28.v20190418-sources.jar" kind="lib" path="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-common/9.2.28.v20190418/447e16933c179d9498da265de202d4a8e83e02ff/websocket-common-9.2.28.v20190418.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-io/9.2.28.v20190418/f3a7c381e0b9cfd1e415c09bb2a684d27136f1e6/jetty-io-9.2.28.v20190418-sources.jar" kind="lib" path="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-io/9.2.28.v20190418/b9219469ee48d03436684890acac89a1053afbcf/jetty-io-9.2.28.v20190418.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-util/9.2.28.v20190418/25df1fb0b8bf0c7152960d1ac40f2644f8125e9b/jetty-util-9.2.28.v20190418-sources.jar" kind="lib" path="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-util/9.2.28.v20190418/2a09eb47f8bae94a527f5c66320b1ede60885f15/jetty-util-9.2.28.v20190418.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-api/9.2.28.v20190418/1f8ca2bc5e920cbeb026bfaa226a23fc50680961/websocket-api-9.2.28.v20190418-sources.jar" kind="lib" path="/home/aitor/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.websocket/websocket-api/9.2.28.v20190418/50702e52114de527c67655ae6d0c125dc3220431/websocket-api-9.2.28.v20190418.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="main,test"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/aitor/.m2/repository/junit/junit/4.12/junit-4.12.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="test"/>
-			<attribute name="test" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/aitor/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar">
-		<attributes>
-			<attribute name="gradle_used_by_scope" value="test"/>
-			<attribute name="test" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="output" path="bin/default"/>
 </classpath>
