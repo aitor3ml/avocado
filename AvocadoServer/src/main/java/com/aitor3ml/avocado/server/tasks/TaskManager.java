@@ -1,12 +1,12 @@
 package com.aitor3ml.avocado.server.tasks;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class TaskManager {
 
-	private final Timer timer = new Timer();
+	private static final long SLEEP_TIME = 5;
+
 	private final PriorityBlockingQueue<Task> queue;
 
 	private long last = 0L;
@@ -23,28 +23,20 @@ public class TaskManager {
 			System.out.println("rejected task " + task);
 			return;
 		}
-		long delay = task.getStart() - System.currentTimeMillis();
-		if (delay > 0)
-			timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					queue.add(task);
-				}
-			}, delay);
-		else
-			queue.add(task);
+		queue.add(task);
 	}
 
 	public void run() {
 		while (!stoping) {
 			Task task = null;
 			try {
-				task = queue.take();
-				assert task.getStart() >= System.currentTimeMillis();
+				task = queue.poll(1, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				break;
 			}
+			if (task == null)
+				continue;
 			if (task.isCanceled())
 				continue;
 
@@ -53,6 +45,16 @@ public class TaskManager {
 			last = start;
 
 			long delay = System.currentTimeMillis() - start;
+			if (delay < 0) {
+				queue.put(task);
+				try {
+					Thread.sleep(SLEEP_TIME);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				continue;
+			}
+
 			if (delay > 50)
 				System.err.println(delay + "ms late:" + task.toString());
 
