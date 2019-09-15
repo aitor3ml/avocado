@@ -4,7 +4,7 @@ subprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'eclipse'
 	group = 'com.aitor3ml.avocado'
-	version = '0.9.1'
+	version = '0.9.2'
 	
 	ext {
 		jettyVersion = "9.2.28.v20190418"
