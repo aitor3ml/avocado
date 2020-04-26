@@ -9,7 +9,6 @@ import com.aitor3ml.avocado.client.websocket.gwt.Websocket;
 import com.aitor3ml.avocado.client.websocket.gwt.WebsocketListener;
 import com.aitor3ml.avocado.shared.networking.Message;
 import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
-import com.aitor3ml.avocado.shared.networking.text.TextCoder;
 
 public class WSConnectionGwt implements WebsocketListener {
 
@@ -37,7 +36,7 @@ public class WSConnectionGwt implements WebsocketListener {
 		String[] parts = msg.split(":", 2);
 		switch (parts[0]) {
 		case "data":
-			clientConnection.message(TextCoder.decode(parts[1]));
+			System.out.println("unsupported data");
 			break;
 		case "ping":
 			client.send("pong:" + parts[1]);

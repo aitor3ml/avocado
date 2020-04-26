@@ -8,7 +8,9 @@ import java.io.ObjectOutputStream;
 import java.util.Base64;
 
 import com.aitor3ml.avocado.shared.networking.Message;
+import com.google.common.annotations.GwtIncompatible;
 
+@GwtIncompatible
 public class TextCoder {
 
 	public static String encode(Message message) {
