@@ -13,7 +13,9 @@ import com.aitor3ml.avocado.client.websocket.WSConnection;
 import com.aitor3ml.avocado.shared.networking.AvocadoDeserializer;
 import com.aitor3ml.avocado.shared.networking.AvocadoKeyStore;
 import com.aitor3ml.avocado.shared.networking.Message;
+import com.google.common.annotations.GwtIncompatible;
 
+@GwtIncompatible
 public class ClientConnectionImpl implements ClientConnection {
 
 	private final URI uri;

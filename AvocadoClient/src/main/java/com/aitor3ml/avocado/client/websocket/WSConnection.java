@@ -17,7 +17,9 @@ import com.aitor3ml.avocado.client.ClientConnectionImpl;
 import com.aitor3ml.avocado.shared.networking.Message;
 import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
 import com.aitor3ml.avocado.shared.networking.text.TextCoder;
+import com.google.common.annotations.GwtIncompatible;
 
+@GwtIncompatible
 @WebSocket
 public class WSConnection {
 
