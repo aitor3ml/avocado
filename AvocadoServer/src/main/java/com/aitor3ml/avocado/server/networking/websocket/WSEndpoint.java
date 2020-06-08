@@ -1,9 +1,12 @@
 package com.aitor3ml.avocado.server.networking.websocket;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,10 +24,11 @@ import com.aitor3ml.avocado.server.networking.NetworkingManager;
 import com.aitor3ml.avocado.server.tasks.Task;
 import com.aitor3ml.avocado.shared.networking.Message;
 import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
-import com.aitor3ml.avocado.shared.networking.text.TextCoder;
 
 @WebSocket
 public class WSEndpoint implements NetworkingConnection {
+
+	private final static Decoder decoder = Base64.getDecoder();
 
 	private final NetworkingManager networkingManager;
 
@@ -57,23 +61,12 @@ public class WSEndpoint implements NetworkingConnection {
 	}
 
 	@OnWebSocketMessage
-	public void onMessage(String msg) {
+	public void onMessage(String packet) throws ClassNotFoundException, IOException {
 		lock.lock();
 		try {
-			String[] parts = msg.split(":", 2);
-			switch (parts[0]) {
-			case "data":
-				schedule(new WSEventMessage(TextCoder.decode(parts[1])));
-				break;
-			case "pong":
-				long time = Long.parseLong(parts[1]);
-				long ping = System.currentTimeMillis() - time;
-				if (ping > 200)
-					System.out.println("ping:" + ping + "ms");
-				break;
-			default:
-				throw new RuntimeException("unkown message type:" + parts[0]);
-			}
+			InputStream is = new ByteArrayInputStream(decoder.decode(packet));
+			Message msg = BinaryCoder.decode(is, networkingManager.getAvocadoDeserializer());
+			schedule(new WSEventMessage(msg));
 		} finally {
 			lock.unlock();
 		}

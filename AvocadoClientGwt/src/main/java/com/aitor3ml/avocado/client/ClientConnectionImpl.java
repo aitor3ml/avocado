@@ -3,13 +3,13 @@ package com.aitor3ml.avocado.client;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import com.aitor3ml.avocado.client.websocket.WSConnectionGwt;
+import com.aitor3ml.avocado.client.websocket.WSConnection;
 import com.aitor3ml.avocado.client.websocket.gwt.Websocket;
 import com.aitor3ml.avocado.shared.networking.AvocadoDeserializer;
 import com.aitor3ml.avocado.shared.networking.Message;
 import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
 
-public class ClientConnectionImplGwt implements ClientConnection {
+public class ClientConnectionImpl implements ClientConnection {
 
 	private final String uri;
 
@@ -17,11 +17,11 @@ public class ClientConnectionImplGwt implements ClientConnection {
 
 	private final Websocket client;
 
-	private final WSConnectionGwt socket;
+	private final WSConnection socket;
 
 	private final AvocadoDeserializer avocadoDeserializer;
 
-	public ClientConnectionImplGwt(String host, int port, boolean ssl, ClientConnectionListener listener,
+	public ClientConnectionImpl(String host, int port, boolean ssl, ClientConnectionListener listener,
 			AvocadoDeserializer avocadoDeserializer) {
 		Websocket client = null;
 		if (ssl)
@@ -34,7 +34,8 @@ public class ClientConnectionImplGwt implements ClientConnection {
 		this.listener = listener;
 		this.avocadoDeserializer = avocadoDeserializer;
 
-		socket = new WSConnectionGwt(client, this);
+		socket = new WSConnection(client, this);
+		client.open();
 	}
 
 	@Override

@@ -3,19 +3,19 @@ package com.aitor3ml.avocado.client.websocket;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.aitor3ml.avocado.client.ClientConnectionImplGwt;
+import com.aitor3ml.avocado.client.ClientConnectionImpl;
 import com.aitor3ml.avocado.client.websocket.gwt.CloseEvent;
 import com.aitor3ml.avocado.client.websocket.gwt.Websocket;
 import com.aitor3ml.avocado.client.websocket.gwt.WebsocketListener;
 import com.aitor3ml.avocado.shared.networking.Message;
 import com.aitor3ml.avocado.shared.networking.binary.BinaryCoder;
 
-public class WSConnectionGwt implements WebsocketListener {
+public class WSConnection implements WebsocketListener {
 
-	private final ClientConnectionImplGwt clientConnection;
+	private final ClientConnectionImpl clientConnection;
 	private final Websocket client;
 
-	public WSConnectionGwt(Websocket client, ClientConnectionImplGwt clientConnectionImplGwt) {
+	public WSConnection(Websocket client, ClientConnectionImpl clientConnectionImplGwt) {
 		this.client = client;
 		this.clientConnection = clientConnectionImplGwt;
 		client.addListener(this);

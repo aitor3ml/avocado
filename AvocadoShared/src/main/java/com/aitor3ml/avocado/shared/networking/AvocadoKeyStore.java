@@ -2,9 +2,6 @@ package com.aitor3ml.avocado.shared.networking;
 
 import java.net.URL;
 
-import com.google.common.annotations.GwtIncompatible;
-
-@GwtIncompatible
 public class AvocadoKeyStore {
 
 	private static final String PATH = "keystore.jks";

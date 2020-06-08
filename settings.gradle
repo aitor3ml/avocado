@@ -1,2 +1,2 @@
 rootProject.name = 'Avocado'
-include 'AvocadoClient', 'AvocadoServer', 'AvocadoShared'
+include 'AvocadoClient','AvocadoClientDesktop','AvocadoClientGwt', 'AvocadoServer', 'AvocadoShared'

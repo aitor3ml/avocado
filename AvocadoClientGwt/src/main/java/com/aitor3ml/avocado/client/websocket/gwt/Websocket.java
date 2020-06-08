@@ -30,6 +30,7 @@ public class Websocket {
 											}-*/;
 
 	private native void _open(Websocket ws, String s, String url) /*-{
+																	if(typeof($wnd)==undefined) $wnd=[];
 																	$wnd[s] = new WebSocket(url);
 																	$wnd[s].onopen = function() { ws.@com.aitor3ml.avocado.client.websocket.gwt.Websocket::onOpen()(); };
 																	$wnd[s].onclose = function(evt) { ws.@com.aitor3ml.avocado.client.websocket.gwt.Websocket::onClose(SLjava/lang/String;Z)(evt.code, evt.reason, evt.wasClean); };

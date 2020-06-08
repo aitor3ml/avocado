@@ -46,8 +46,25 @@ subprojects {
 project(":AvocadoClient") {
 	dependencies {
 	    api project(':AvocadoShared')
+	    
+	    testImplementation 'junit:junit:4.12'
+	}
+}
+
+project(":AvocadoClientDesktop") {
+	dependencies {
+	    api project(':AvocadoClient')
 	
 	    implementation group: 'org.eclipse.jetty.websocket', name: 'websocket-client', version: "$jettyVersion"
+	    
+	    testImplementation 'junit:junit:4.12'
+	}
+}
+
+project(":AvocadoClientGwt") {
+	dependencies {
+	    api project(':AvocadoClient')
+	
         compile group: 'com.google.gwt', name: 'gwt-user', version: '2.8.2'
 	    
 	    testImplementation 'junit:junit:4.12'
@@ -66,8 +83,8 @@ project(":AvocadoServer") {
 
 project(":AvocadoShared") {
 	dependencies {
-        compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
-        compile group: 'com.google.gwt', name: 'gwt-user', version: '2.8.2'
+        //compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
+        //compile group: 'com.google.gwt', name: 'gwt-user', version: '2.8.2'
 	    testImplementation 'junit:junit:4.12'
 	}
 }
